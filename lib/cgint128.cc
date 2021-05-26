@@ -91,7 +91,7 @@ void cgint128::New(const Nan::FunctionCallbackInfo<v8::Value> &info)
             {
                 v8::String::Utf8Value str(isolate, info[0]);
                 std::string cppStr(*str);
-                bottom = atoll(cppStr.c_str());
+                bottom = atoll(cppStr.c_str());                
             }
             else
             {
@@ -100,14 +100,13 @@ void cgint128::New(const Nan::FunctionCallbackInfo<v8::Value> &info)
             if (info[1]->IsString())
             {
                 v8::String::Utf8Value str(isolate, info[1]);
-                std::string cppStr(*str);
+                std::string cppStr(*str);                
                 top = atoll(cppStr.c_str());
             }
             else
             {
                 top = info[1]->IntegerValue(context).FromJust();
-            }
-            std::cout << "top:" << top << " bottom:" << bottom << std::endl;
+            }                        
             cgint128 *obj = new cgint128(top, bottom);
             obj->Wrap(info.This());
             info.GetReturnValue().Set(info.This());
@@ -137,7 +136,7 @@ void cgint128::GetTop(v8::Local<v8::String> property, const Nan::PropertyCallbac
     uint64 top = Uint128High64(obj->value);
     char temp[20] = {'\0'};
     temp[0] = '\0';
-    sprintf(temp, "%llu", top);
+    sprintf(temp, "%lld", top);
     info.GetReturnValue().Set(Nan::New(temp).ToLocalChecked());
 }
 
@@ -146,7 +145,7 @@ void cgint128::GetBottom(v8::Local<v8::String> property, const Nan::PropertyCall
     cgint128 *obj = ObjectWrap::Unwrap<cgint128>(info.Holder());
     uint64 top = Uint128Low64(obj->value);
     char temp[20] = {'\0'};
-    sprintf(temp, "%llu", top);
+    sprintf(temp, "%lld", top);
     info.GetReturnValue().Set(Nan::New(temp).ToLocalChecked());
 }
 
