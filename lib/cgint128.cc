@@ -18,9 +18,9 @@ cgint128::cgint128(const std::string &str) : value(0)
 }
 cgint128::~cgint128() {}
 
-void cgint128::Init(v8::Local<v8::Object> exports)
+void cgint128::Init(v8::Local<v8::Context> context, v8::Local<v8::Object> exports)
 {
-    v8::Local<v8::Context> context = exports->CreationContext();
+    // v8::Local<v8::Context> context = exports->CreationContext();
     Nan::HandleScope scope;
 
     // Prepare constructor template
@@ -38,6 +38,10 @@ void cgint128::Init(v8::Local<v8::Object> exports)
     Nan::SetPrototypeMethod(tpl, "compare", compare);
     //   Nan::SetPrototypeMethod(tpl, "multiply", Multiply);
     Nan::SetAccessor(proto, Nan::New("value").ToLocalChecked(), GetValue);
+    Nan::SetAccessor(proto, Nan::New("n1").ToLocalChecked(), GetN1);
+    Nan::SetAccessor(proto, Nan::New("n2").ToLocalChecked(), GetN2);
+    Nan::SetAccessor(proto, Nan::New("n3").ToLocalChecked(), GetN3);
+    Nan::SetAccessor(proto, Nan::New("n4").ToLocalChecked(), GetN4);
     Nan::SetAccessor(proto, Nan::New("top").ToLocalChecked(), GetTop);
     Nan::SetAccessor(proto, Nan::New("bottom").ToLocalChecked(), GetBottom);
 
@@ -110,6 +114,19 @@ void cgint128::New(const Nan::FunctionCallbackInfo<v8::Value> &info)
             cgint128 *obj = new cgint128(top, bottom);
             obj->Wrap(info.This());
             info.GetReturnValue().Set(info.This());
+        }else if(info.Length() == 4){
+            uint32 n1 = info[0]->IntegerValue(context).FromJust();
+            uint32 n2 = info[1]->IntegerValue(context).FromJust();
+            uint32 n3 = info[2]->IntegerValue(context).FromJust();
+            uint32 n4 = info[3]->IntegerValue(context).FromJust();
+            uint64 top = 0, bottom = 0;
+            bottom = (uint64)n2 << 32 | n1;
+            top =(uint64)n4 << 32 | n3;
+            std::cout<<n1<<" "<<n2<<" "<<n3<<" "<<n4<<std::endl;
+            std::cout<<bottom<< " "<<top <<std::endl;
+            cgint128 *obj = new cgint128(top, bottom);
+            obj->Wrap(info.This());
+            info.GetReturnValue().Set(info.This());
         }
     }
     else
@@ -147,6 +164,35 @@ void cgint128::GetBottom(v8::Local<v8::String> property, const Nan::PropertyCall
     char temp[20] = {'\0'};
     sprintf(temp, "%lld", top);
     info.GetReturnValue().Set(Nan::New(temp).ToLocalChecked());
+}
+
+void cgint128::GetN1(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info)
+{
+    cgint128 *obj = ObjectWrap::Unwrap<cgint128>(info.Holder());
+    uint64 n = Uint128Low64(obj->value);
+    int32 n1 = (int32)n;
+    info.GetReturnValue().Set(n1);
+}
+void cgint128::GetN2(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info)
+{
+    cgint128 *obj = ObjectWrap::Unwrap<cgint128>(info.Holder());
+    uint64 n = Uint128Low64(obj->value);
+    int32 n2 = (int32)(n>>32);    
+    info.GetReturnValue().Set(n2);
+}
+void cgint128::GetN3(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info)
+{
+    cgint128 *obj = ObjectWrap::Unwrap<cgint128>(info.Holder());
+    uint64 n = Uint128High64(obj->value);
+    int32 n3 = (int32)n;    
+    info.GetReturnValue().Set(n3);
+}
+void cgint128::GetN4(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info)
+{
+    cgint128 *obj = ObjectWrap::Unwrap<cgint128>(info.Holder());
+    uint64 n = Uint128High64(obj->value);
+    int32 n4 = (int32)(n>>32);
+    info.GetReturnValue().Set(n4);
 }
 
 void cgint128::Plus(const Nan::FunctionCallbackInfo<v8::Value> &info)

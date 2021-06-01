@@ -11,7 +11,7 @@ public:
     uint128 value;
 
 public:
-    static void Init(v8::Local<v8::Object> exports);
+    static void Init(v8::Local<v8::Context> context, v8::Local<v8::Object> module);
     
 private:
     explicit cgint128();
@@ -29,11 +29,12 @@ private:
     static Nan::Persistent<v8::Function> constructor;
 
     static void GetValue(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info);
+    
+    static void GetN1(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info);
+    static void GetN2(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info);
+    static void GetN3(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info);
+    static void GetN4(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info);    
     static void GetTop(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info);
     static void GetBottom(v8::Local<v8::String> property, const Nan::PropertyCallbackInfo<v8::Value> &info);
-
-    
-    
-    
 };
 #endif
