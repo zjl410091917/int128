@@ -121,9 +121,7 @@ void cgint128::New(const Nan::FunctionCallbackInfo<v8::Value> &info)
             uint32 n4 = info[3]->IntegerValue(context).FromJust();
             uint64 top = 0, bottom = 0;
             bottom = (uint64)n2 << 32 | n1;
-            top =(uint64)n4 << 32 | n3;
-            std::cout<<n1<<" "<<n2<<" "<<n3<<" "<<n4<<std::endl;
-            std::cout<<bottom<< " "<<top <<std::endl;
+            top =(uint64)n4 << 32 | n3;            
             cgint128 *obj = new cgint128(top, bottom);
             obj->Wrap(info.This());
             info.GetReturnValue().Set(info.This());

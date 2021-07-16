@@ -30,6 +30,7 @@
 
 #include "int128.h"
 
+#include <cstring>
 #include <iomanip>
 #include <ostream> // NOLINT(readability/streams)
 #include <sstream>
@@ -203,20 +204,42 @@ std::ostream &operator<<(std::ostream &o, const uint128 &b)
 std::string uint128::toString(){    
     uint128 div = static_cast<uint64>(10000000000000000000u); // 10^19
     uint128 high = *this;
-    uint128 low;    
+    uint128 low;
     DivModImpl(high, div, &high, &low);
-    uint128 mid;    
-    DivModImpl(high, div, &high, &mid);    
-    char str[64] = {'\0'};;
-    str[0] = '\0';
+    uint128 mid;
+    DivModImpl(high, div, &high, &mid);
+    int div_base_log = 19;
+    char str[40] = {'0'};
+    char temp[19] = {'0'};
+    memset(str, '\0', 40);
+    memset(temp, '\0', div_base_log);
     if (high.lo_ != 0)
-    {        
-        sprintf(str, "%llu%llu", high.lo_, mid.lo_);
+    {
+        sprintf(str, "%llu", high.lo_);
+
+        memset(str + strlen(str), '0', div_base_log);
+        memset(temp, '\0', div_base_log);
+        sprintf(temp, "%llu", mid.lo_);
+
+        sprintf(str + strlen(str) - strlen(temp), "%llu", mid.lo_);
     }
     else if (mid.lo_ != 0)
-    {        
-        sprintf(str + strlen(str), "%llu", mid.lo_);
-    }        
-    sprintf(str + strlen(str), "%llu", low.lo_);            
+    {
+        sprintf(str, "%llu", mid.lo_);
+    }
+
+    if (strlen(str))
+    {
+        memset(str + strlen(str), '0', div_base_log);
+        memset(temp, '\0', div_base_log);
+        sprintf(temp, "%llu", low.lo_);
+
+        sprintf(str + strlen(str) - strlen(temp), "%llu", low.lo_);
+    }
+    else
+    {
+        sprintf(str, "%llu", low.lo_);
+    }
+
     return str;
 }
