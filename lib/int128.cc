@@ -209,10 +209,10 @@ std::string uint128::toString(){
     uint128 mid;
     DivModImpl(high, div, &high, &mid);
     int div_base_log = 19;
-    char str[40] = {'0'};
-    char temp[19] = {'0'};
-    memset(str, '\0', 40);
-    memset(temp, '\0', div_base_log);
+    char str[50] = {'0'};
+    char temp[50] = {'0'};
+    memset(str, '\0', 50);
+    memset(temp, '\0', 50);
     if (high.lo_ != 0)
     {
         sprintf(str, "%llu", high.lo_);

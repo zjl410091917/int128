@@ -149,8 +149,8 @@ void cgint128::GetTop(v8::Local<v8::String> property, const Nan::PropertyCallbac
 {
     cgint128 *obj = ObjectWrap::Unwrap<cgint128>(info.Holder());
     uint64 top = Uint128High64(obj->value);
-    char temp[20] = {'\0'};
-    temp[0] = '\0';
+    char temp[50] = {'\0'};
+    memset(temp, '\0', 50);
     sprintf(temp, "%lld", top);
     info.GetReturnValue().Set(Nan::New(temp).ToLocalChecked());
 }
@@ -159,7 +159,8 @@ void cgint128::GetBottom(v8::Local<v8::String> property, const Nan::PropertyCall
 {
     cgint128 *obj = ObjectWrap::Unwrap<cgint128>(info.Holder());
     uint64 top = Uint128Low64(obj->value);
-    char temp[20] = {'\0'};
+    char temp[50] = {'\0'};
+    memset(temp, '\0', 50);
     sprintf(temp, "%lld", top);
     info.GetReturnValue().Set(Nan::New(temp).ToLocalChecked());
 }
